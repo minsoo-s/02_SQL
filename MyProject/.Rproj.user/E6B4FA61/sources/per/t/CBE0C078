@@ -1,0 +1,27 @@
+{
+    "id": "CBE0C078",
+    "path": "C:/RProject/MyProject/mycode.r",
+    "project_path": "mycode.r",
+    "type": "r_source",
+    "hash": "402619652",
+    "contents": "",
+    "dirty": false,
+    "created": 1659662711326.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "374,0",
+        "scrollLine": "355"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1659666940,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1659666940376,
+    "read_only": false,
+    "read_only_alternatives": []
+}
