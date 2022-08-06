@@ -378,6 +378,7 @@ class(df)
 df$평균 <- (df$파이썬+df$R+df$머신러닝)/3
 # 방법2
 df$평균 <- round(apply(df[, 3:5], MARGIN =1, mean),2)
+
 head(df)
 # 저장
 write.csv(df,"score.csv",row.names=F)
@@ -387,6 +388,370 @@ write.csv(df,"score.csv",row.names=F)
 df <- read.csv("my_iris.csv",header=T)
 df
 
+# [07 데이터전처리] 결측치 이상치-------------
+
+aq <- airquality
+str(aq)
+aq$Ozone
+mean(aq$Ozone, na.rm = T) # na.rm
+is.na(aq$Ozone)
+aq$Ozone[is.na(aq$Ozone)]
+sum(is.na(aq$Ozone))
+
+ozone <- aq$Ozone
+ozone[is.na(ozone)] <- 0 
+ozone[is.na(ozone)] <- mean(ozone,na.rm=T)
+ozone[is.na(ozone)] <- sample(na.omit(ozone),37)
+
+mean(aq$Ozone, na.rm = T)
+mean(ozone)
+
+dim(aq)
+
+sd(ozone[is.na(ozone)])
+sd(ozone)
+
+a <- airquality
+complete.cases(aq)
+aq[!complete.cases(aq),]
+aq <- aq[complete.cases(aq),]
+aq 
+
+#install.packages("VIM")
+library(VIM)
+?aggr
+aggr(airquality)
+
+
+st <- data.frame(state.x77)
+boxplot(st$Income,
+        col ="tomato",
+        pch = 19,
+        border ='red')
+
+boxplot.stats(st$Income)
+class(boxplot.stats(st$Income)
+
+boxplot(st$Income)$out
+st[st$Income==boxplot.stats(st$Income)$out,]
+
+df=iris
+
+boxplot(df$Petal.Length, col ="skyblue")
+boxplot(Petal.Width~Species,data = iris,pch=19, 
+        col ="orange", border ="brown")
+boxplot(df$Petal.Width~df$Species,pch=19, 
+        col ="orange", border ="brown")
+
+a = boxplot(Petal.Length ~ Species, data = iris,
+        col = "steelblue")
+
+boxplot(df$Petal.Length~df$Species)$out
+
+#---------------------------------------------------------
+a = boxplot(Petal.Length ~ Species, data = iris,
+            col = "steelblue")
+
+# Petal.Width가 네번째 컬럼
+outlier <- boxplot.stats(iris[iris$Species =="setosa", 4])$out
+outlier
+
+# Petal.Width == 0.5 or 0.6 을 확인하고 싶은 것
+iris[iris$Petal.Width == outlier,]
+# 하지만 위 식은 요소1 == 0.5, 요소2 ==0.6 요소3==0.5 
+# 이렇게 비교됨 -> 잘못된 코드임
+
+iris[iris$Petal.Width %in% outlier,]
+
+#[챕터 8 데이터전처리 2]-----------------------------------------------
+
+# subset-----------------------------------------
+st <- data.frame(state.x77)
+colnames(st)
+# 인구가 가장 많은 지역의 문맹률, 졸업률
+st[st$Population == max(st$Population),c(3,6)]
+
+
+subset(st, 
+       subset = st$Population == max(st$Population),
+       select = c(3,6))
+
+
+set <- iris[iris$Species =='setosa',]
+vrs <- iris[iris$Species =='versicolor',]
+vrg <- iris[iris$Species =='virsinica',]
+# split: 위 경우 한번에 할 수 있는 방법 
+sp <- split(iris, f= iris$Species)
+length(sp)
+names(sp)
+class(sp)
+
+# 줄어듬 iris[iris$Species =='setosa',]->sp$setosa
+sp$setosa
+sp$versicolor
+sp$virginica
+
+dim(sp$setosa)
+dim(sp$versicolor)
+
+# 다시 합치고 싶은 경우
+# rbind:행을 기준 
+df.2 <- rbind(sp$setosa, sp$versicolor)
+dim(df.2)
+
+iris[, 1:2]
+iris[, 3:4]
+
+# cbind: 열을 기준
+df.3 <- cbind(iris[,1:2],iris[,3:4])
+dim(df.3)
+str(df.3)
+
+  
+# merge
+library(readxl)
+df.1 <- read_excel("성적표.xlsx",sheet=1)
+df.2 <- read_excel("성적표.xlsx",sheet=2)
+df.1
+df.2
+  
+cbind(df.1,df.2)
+df <- merge(df1,df2, all=T, 
+      by.x = c("번호","이름"),
+      by.y = c("No","name")
+df
+str(df)      
+
+colnames(df)[6] <- c('no',
+                  'name',
+                  'python',
+                  'r',
+                  'ml',
+                  'dl',
+                  'cloud'
+              )
+
+df.2$`Deep Learning`
+colnames(df)[6] <- "딥러닝"
+
+# aggregate:집계 --------------------------------------------------------------
+df <- iris
+aggregate(df[,-5],
+          by = list(품종=df$Species),
+          FUN = mean)
+aggregate(df[,-5],
+          by = list(품종=df$Species),
+          FUN =sd)
+  
+library(MASS)
+data("survey")
+df <- survey
+str(df)  
+
+df<-na.omit(df) #None 행 제거 ???
+df <- df[complete.cases(df),]
+dim(df)  
+
+hist(df$Height, breaks = 20)
+
+hist(df[df$Sex =='Male',]$Height, breaks = 20)
+hist(df[df$Sex =='Female',]$Height, breaks = 20)
+  
+  
+mean(df[df$Sex =='Male',]$Height, breaks = 20)
+mean(df[df$Sex =='Female',]$Height, breaks = 20)
+
+aggregate(df[,c(10,12)],
+          by = list(Gender = df$Sex),
+          FUN = mean)
+
+table(df$Sex)
+
+# A ~ B: A값을 B를 기준으로
+t.test(Height ~ Sex, data =df)
+boxplot(Height ~ Sex, data = df,
+        col = c("orange","tomato"))
+  
+# sort: 정렬 / order: 정렬 후 인덱스 위치를 알려줌
+v <-  c(30,50,20,40,10)
+v
+sort(v)
+sort(v,decreasing = T)
+
+df <- data.frame(state.x77)
+str(df)
+sort(df$Illiteracy,decreasing = T)
+
+ord <- order(df$Illiteracy,decreasing = T)
+df[ord[1:10],c(3,2)]
+df
+
+ord <- order(df$Illiteracy,df$Income,decreasing = T)
+df[ord[1:10],c(3,2)]
+
+# sample 함수 
+for (i in 1:1000000){
+  x <- sample(1:10, size=5)
+  s <- s + sum(x == 7) 
+}
+s
+
+# replace -> 복원 추출
+set.seed(2022)
+sample(1:10, size =5, replace = T) 
+
+
+idx <- sample(1:nrow(iris),size = 50)
+iris[idx,]
+
+
+# 실습 - palmerpenguins--------------------
+
+# 불러오기
+install.packages("palmerpenguins")
+
+data(package ="palmerpenguins")  
+data("penguins")  
+
+pg <- data.frame(penguins)  
+str(pg) 
+
+# 결측치 제거
+library(VIM)
+aggr(pg,numbers=T,prop =F)
+pg <- na.omit(pg)
+dim(pg)
+
+str(pg)
+table(pg$species)
+barplot(table(pg$species))
+
+table(pg$island)  
+barplot(table(pg$island))  
+  
+table(pg$sex)  
+barplot(table(pg$sex))  
+
+# numeric 요소 확인
+str(pg[,3:6])
+summary(pg[,3:6])
+
+par(mfrow = c(2,2))
+hist(pg$bill_length_mm, col= 1:3)
+hist(pg$bill_depth_mm)
+hist(pg$flipper_length_mm)
+hist(pg$body_mass_g)
+par(mfrow = c(1,1))
+
+# 종구분전
+plot(pg$bill_length_mm,pg$bill_depth_mm,pch=19)
+cor(pg$bill_length_mm,pg$bill_depth_mm)
+
+# 종구분(color)
+my.color <- ifelse(pg$species=='Gentoo','tomato',ifelse(pg$species=="Adelie",'steelblue','orange'))
+plot(pg$bill_length_mm,pg$bill_depth_mm,pch=19,col=my.color)
+cor(pg[pg$species =='Adelie',]$bill_length_mm,
+    pg[pg$species =='Adelie',]$bill_depth_mm)
 
 
 
+  
+df.split <- split(iris, f = iris$Species)
+df.split
+
+df.rbind <- rbind(df.split$setosa, df.split$virginica)
+df.rbind
+
+df.cbind <- cbind(df.split$setosa, df.split$virginica)
+df.cbind
+str(df.rbind)
+  
+ord <- order(iris$Petal.Length, iris$Sepal.Length)
+ord
+head(iris[ord, c(3, 1)])  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  

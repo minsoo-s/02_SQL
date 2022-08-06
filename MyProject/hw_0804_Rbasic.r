@@ -324,3 +324,102 @@ div_cnt <- function(n) length((1:sqrt(n))[n%%(1:n)==0])
 is_prime <- function(n) div.cnt(n)==2
 prime_cnt <- function(n) sum(sapply(1:n,is_prime))
 prime_cnt(100)
+
+# [연습문제 6.1]------------------------------------------------------------
+# • state.x77 데이터셋에 대하여 R 코드를 작성하시오.
+#   - state.x77 데이터셋을 st 변수에 저장: 데이터 프레임 형태로 저장할 것
+#   - st 데이터 프레임의 변수와 관측값의 개수는?
+#      - 각 주별 소득(Income)의 평균은?
+#      - 인구(Population)가 10,000보다 큰 주의 인구, 소득은?
+#      - Florida 주의 인구와 소득은?
+# • rownames(st) 는 st 각 주의 이름 벡터를 리턴한다.
+#   - 인구가 1,000보다 작고, 소득이 4,436보다 작은 주의 모든 정보를 출력하라.
+#   - 문맹률(Illiteracy)의 평균을
+#      - 소득이 5,000보다 작은 주에 대해서 구하라.
+#      - 소득이 5,000보다 큰 주에 대해서 구하라.
+#--------------------------------------------------------------------------
+st <- data.frame(state.x77)
+# 변수와 관측값의 개수
+dim(st)
+# 주별 소득 평균/ 인구가 10000보다 큰 주의 인구,소득 / florida 인구,소득
+mean(st$Income)
+st[st$Population>10000,c(1,2)]
+#colnames(st)
+st[rownames(st) == 'Florida',c(1,2)]
+# 인구 1000미만, 소득4436미만 주 모든 정보 / 문맹평균(소득5000이상,이하)
+st[st$Population<1000 & st$Income <4436,]
+mean(st[st$Income<5000,"Illiteracy"])
+mean(st[st$Income>=5000,"Illiteracy"])
+
+# 파일 불러오기 저장
+library(readxl)
+df <- read_excel('성적표.xlsx',sheet=1)
+df$평균 <- round(apply(df[, 3:5], MARGIN =1, mean),2)
+df$평균 <- apply(df[,4:6],MARGIN =1,mean)
+df$평균
+
+# 파일  csv저장
+write.csv(df,"성적표2",row.names=F)
+
+library(mice)
+df <- airquality
+df[complete.cases(df),]
+
+# [연습문제 8.1] --------------------------------------------------------
+#  • state.x77 데이터셋에 대하여, 다음 R 코드를 작성하시오.
+#    - Population을 기준으로 오름차순으로 정렬하시오.
+#    - Income을 기준으로 내림차순으로 정렬하시오.
+#    - Illiteracy를 기준으로 오름차순으로 정렬하되,
+#     - 문맹률이 같은 주에 대해서는 Population의 내림차순으로 정렬하시오.
+# -----------------------------------------------------------------------
+df = data.frame(state.x77)
+sort(df$Population)
+
+# 열 하나만 뽑아도 인덱스 함께 보기
+Pop_ord <- order(df$Population)
+Pop_ord
+
+df <- df[Pop_ord,]
+
+subset(df, 
+       select = 2)
+
+# [연습문제 8.2]---------------------------------------------------------------
+# • mtcars 데이터셋에 대하여, 다음 R 코드를 작성하시오.
+#   - mtcars 데이터셋을 gear의 개수에 따라 그룹을 나누시오. 
+#     • split() 함수를 이용하여 df.split에 저장
+#   - mtcars 데이터셋에서 gear의 개수가 3인 그룹과 4인 그룹을 합치시오.
+#      • rbind() 함수를 이용하여 df.34에 저장
+#------------------------------------------------------------------------------
+str(mtcars)
+df.split <- split(mtcars, f=df$gear)
+df.split$'3'
+df.split$'4'
+df.34 <- rbind(df.split$'3', df.split$'4')
+df.34
+
+# [연습문제 8.3]----------------------------------------------------------------
+# • airquality 데이터셋에 대하여, 다음 R 코드를 작성하시오.
+#   - airquality에서 1, 2, 3, 4번 column을 추출하여 df에 저장: subset() 함수
+#   - 위에서 추출한 변수에 대해 월별(Month)로 평균을 구하시오.
+#     • aggregate() 함수로 mean() 함수를 범주를 Month로 하여 구할 수 있음.
+#     • NA 값에 대해서는 na.rm = T로 매개변수값을 지정
+#   - 위에서 추출한 변수에 대해 일별(Day)로 표준편차를 구하시오.
+#     • aggregate() 함수로 sd() 함수를 적용하여 df.day 에 저장
+#-------------------------------------------------------------------------------
+df <- airquality[,1:4] # 그냥하기
+df <- subset(airquality,select =1:4) #subset사용
+df 
+
+airquality
+airquality_aggr <- aggregate(df,
+                            by=list(Month = airquality$Month),
+                            FUN = mean,
+                            na.rm = TRUE)
+airquality_aggr
+
+df.day <- aggregate(df,
+                    by=list(Day=airquality$Day),
+                    FUN = sd,
+                    na.rm= TRUE)
+df.day
