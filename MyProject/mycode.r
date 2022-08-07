@@ -12,7 +12,6 @@ y <- 5
 z<-  z + y  
 
 getwd()
-
 plot(iris)
 
 # 모를 때
@@ -24,7 +23,11 @@ View(iris)
 
 # 패키지 설치. library() 는 없는 패키지 설치할 지 물어봄. 놓치면 install.packages("")
 library(cowsay)
+
+install.packages('cowsay')
+
 say('안녕,난 주니온이야!')
+
 say("안녕", by = "chicken")
 say("병준 바보" , by="facecat")
 
@@ -120,6 +123,7 @@ print("다이어트")
 # [ 벡터 ] --------------------------------------------------
 v <- c(10, 20, 30, 40, 50, 60, 70)
 v[1]
+
 
 v[1:3]
 v[3:6]
