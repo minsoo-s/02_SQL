@@ -423,3 +423,66 @@ df.day <- aggregate(df,
                     FUN = sd,
                     na.rm= TRUE)
 df.day
+
+
+#[팔머 펭귄 분석] -------------------------------------------------
+install.packages("palmerpenguins")
+library(palmerpenguins)
+df <- penguins
+
+table(df$island)
+install.packages('gmodels')
+library(gmodels)
+CrossTable(df$island,df$species,
+           prop.t = F, Prop.chisq =F)
+
+?CrossTable
+
+install.packages('psych')
+library(psych)
+
+aggregate(df[,3:6], 
+          by=list(species = df$species),
+          FUN=mean,
+          na.rm=T)
+
+tapply(df$bill_length_mm,
+       INDEX = list(species = df$species),
+       FUN=mean,
+       na.rm=T)
+
+tapply(df$bill_depth_mm,
+       INDEX = list(species = df$species),
+       FUN=mean,
+       na.rm=T)
+
+
+str(df)
+boxplot(flipper_length_mm~species,
+        data=df, col=2:4)
+
+adelie <- split(df, df$species)$Adelie
+adelie
+outlier <- boxplot.stats(adelie$flipper_length_mm)$ouut
+outlier
+df[df$flipper_length_mm %in% outlier,]
+
+
+adelie <- df[df$species=='Adelie',]
+adelie 
+outlier <- boxplot.stats(adelie$flipper_length_mm)$out
+outlier
+result <- df[df$flipper_length_mm %in% outlier,]
+dim(result)
+
+df <- na.omit(penguins)
+df <- data.frame(df)
+
+# 날개 길이 오름차순, 체질량 내림차순 정렬
+
+ord <- order(df$flipper_length_mm, df$body_mass_g)
+ord
+df_ord <- df[ord,5:6]
+df_head <- head(df_ord,n=10)
+rownames(df_ord) <- NULL
+df_head
