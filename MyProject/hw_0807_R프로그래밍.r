@@ -416,7 +416,7 @@ airquality_aggr <- aggregate(df,
                             by=list(Month = airquality$Month),
                             FUN = mean,
                             na.rm = TRUE)
-airquality_aggr
+plot(airquality_aggr)
 
 df.day <- aggregate(df,
                     by=list(Day=airquality$Day),

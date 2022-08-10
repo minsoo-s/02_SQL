@@ -45,13 +45,13 @@ plot(cars$speed,cars$dist,
 #[연습문제 2.1]
 plot(iris$Species,
      col = "tomato",
-     main = "품종의 막대그래프프",
+     main = "품종의 막대그래프",
      xlab = "품종",
      ylab = "개수")
 
 # [연습문제 2.2]
 # 꽃잎의 너비(Petal.Width)에 대해서 다음 통계량을 구하시오.
-
+iris$Petal.Width
 # 평균
 mean(iris$Petal.Width)
 # 분산
