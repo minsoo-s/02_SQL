@@ -117,3 +117,95 @@ x.samp <- seq(30,90,length = 200)
 curve(dnorm(x.samp,mean(x),sd(X.bar)), 
       30, 90, col='tomato',
       add= T, lwd=3, lty=2)
+
+
+cor(iris[,-5])
+
+cor.test(iris$Petal.Width,iris$Petal.Length)
+
+binom.test(x= 60, n = 100, p = 0.5)
+qnorm(p = 0.5, mean = 50, sd = 10)
+qnorm(p = 0.68, mean = 50, sd = 10)
+
+qnorm(p = 0.975, mean = 50, sd = 10)
+qnorm(p = 0.025, mean = 50, sd = 10)
+
+qnorm(p = 0.005, mean = 50, sd = 10)
+qnorm(p = 0.995, mean = 50, sd = 10)
+
+# pnorm, qnorm 서로 구하는 관계
+pnorm(75.75829, mean = 50, sd = 10)
+pnorm(24.24171, mean = 50, sd = 10)
+pnorm(69.59964, mean = 50, sd = 10)
+pnorm(30.40036, mean = 50, sd = 10)
+
+binom.test(x =65, n=100, p=0.5)
+
+binom.test(x =60, n=100, p=0.5, conf.level=0.99)
+
+# 정규성 테스트 (shapiro.test)
+shapiro.test(survey$Height)
+hist(survey$Height)
+
+shapiro.test(survey$Age)
+hist(survey$Age)
+
+shapiro.test(iris$Petal.Length)
+shapiro.test(mtcars$mpg)
+
+
+qqnorm(survey$Height,col='skyblue')
+qqline(survey$Height,col='tomato',lwd=3)
+
+qqnorm(survey$Age,col='skyblue')
+qqline(survey$Age,col='tomato',lwd=3)
+
+
+df <- read.csv('../FirstMiniProject/HousePrices.csv')
+shapiro.test(df$GarageArea)
+shapiro.test(df$GarageCars)
+shapiro.test(df$MSSubClass)
+shapiro.test(df$OverallQual)
+
+# df(degree of freedom) : 자유도
+v <- rt(n =10000, df = 29) 
+hist(v,col='steelblue', prob=T)
+
+x <- seq(-4,4,length=200)
+#자유도선그리기
+curve(dt(x, df=29),min= -4,max = 4,
+      add=T,
+      col='tomato',lwd=3, lty=2)
+#정규분포그리기
+curve(dnorm(x),-4,4,
+      add =T,
+      col ='violet',lwd=5,lty=4)
+
+# pt:누적분포함수(q확률변수, df자유도)
+pt(q =2.04523, df=19)
+pt(q =0.975, df=29)
+# qt는 누적분포함수의 역함수
+qt(p = 0.975, df=29)
+qt(p = 0.995, df=29)
+
+
+# t-test실습(종속:수치, 독립:범주) 
+str(cats)
+
+library(MASS)
+table(cats$Sex)
+
+mean(cats$Bwt)
+tapply(cats$Bwt, 
+       INDEX = list(Sex=cats$Sex), 
+       mean)
+
+# conf.level: 신뢰구간
+t.test(Bwt~ Sex, data=cats,conf.level=0.99)
+
+
+str(sleep)
+t.test(extra~group, data =sleep, paired = T)
+
+
+
