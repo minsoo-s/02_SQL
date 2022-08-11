@@ -203,9 +203,241 @@ tapply(cats$Bwt,
 # conf.level: 신뢰구간
 t.test(Bwt~ Sex, data=cats,conf.level=0.99)
 
-
 str(sleep)
 t.test(extra~group, data =sleep, paired = T)
 
 
 
+
+
+
+# 실습: 수면 
+str(sleep)
+head(sleep)
+
+library(tidyr) # spread library
+wide.df <- spread(sleep, key=group, value = extra)
+summary(wide.df)
+
+tapply(sleep$extra,
+       INDEX = list(sleep$group),
+       FUN = mean)
+
+# 두 가지 방법
+t.test(extra~group, data = sleep, paired =T)
+t.test(wide.df$'1' , wide.df$'2', paired=T)
+
+
+# 실습: 카이스퀘어
+# -> 양측검정 불가능(평균비교가 아니기 때문)
+windows(width=10,height=8)
+v <- rchisq(n = 1000, df=1)
+hist(v, col ='orange')
+
+x <- seq(0,15,length=200)
+x
+curve(dchisq(x,df=1),0,15,
+      col='tomato',lwd=2,lty=1)
+curve(dchisq(x,df=5),0,15,
+      col='skyblue',lwd=2,lty=1,
+      add=T)
+curve(dchisq(x,df=10),0,15,
+      col='orange',lwd=2,lty=1,
+      add=T)
+curve(dchisq(x,df=199),0,15,
+      col='green',lwd=2,lty=1,
+      add=T)
+
+# 카이스퀘어 value값 알아내기
+qchisq(p=0.95,df=1) # x = 3.84정도에서 95%를 포함함.
+pchisq(q=2.5,df=1) 
+pchisq(q=3.84,df=1) 
+pchisq(q=5,df=1, lower.tail = F) 
+
+# 매트릭스 만들기
+mt <- matrix(c(1443,151,47,1781,312,135), nrow=3)
+class(mt)
+mt
+
+df <- data.frame(mt)
+str(df)
+colnames(df) <- c("With","Without")
+rownames(df) <- c("경상","중상","사망")
+df
+
+
+oij <- c(1443,1781,151,312,47,135)
+eij <- c(1367, 1855.9,196.9,267.4,77.1,104.7)
+sum((oij-eij)^2/eij)
+
+
+# 타이타닉 데이터셋 p-value 검정
+Titanic
+str(Titanic)
+class(Titanic)
+
+tb <- margin.table(Titanic,margin=c(4,1))
+class(tb)
+tb
+chisq.test(tb)
+
+tb <- margin.table(Titanic,margin=c(4,2))
+chisq.test(tb)
+tb
+
+tb <- margin.table(Titanic,margin=c(4,3))
+chisq.test(tb)
+
+
+
+# 실습 : f분포
+
+v <- rf(n=10000, df1=1, df2=30)
+hist(v,col='steelblue')
+
+x <- seq(0,15,lengt=20)
+curve(df(x,df1=1, df2= 30),0,15,
+      col="tomato",lwd=3,lyu=1)
+
+curve(df(x,df1=5, df2= 50),0,15,
+      col="steelblue",lwd=3,lyu=1,
+      add = T)
+
+curve(df(x,df1=1, df2= 80),0,15,
+      col="orange",lwd=3,lyu=2,
+      add=T)
+
+
+qf(p = 0.95, df1=1, df2=30)
+pf(q=4,17)
+
+
+# 실습 : 스프레이
+df <- InsectSprays
+str(df)
+table(df$spray)
+
+round(tapply(df$count, 
+       INDEX = list(df$spray),
+       FUN=mean),3)
+# 스프레이종류에따라 차이가 있어 보인다~
+
+boxplot(df$count~df$spray,col=2:7)
+# 군이 나뉘는 듯 보인다.
+
+aov.result <- aov(count ~ spray, data=df) #분산분석
+summary(aov.result)
+# 일단 집단간의 분산에 따른 분석을 통해 차이가 있음.
+
+TukeyHSD(aov.result)
+# 사후분석: 구체적인 요소들의 관계 p-value
+
+
+
+# 실습 
+#install.packages('gplots')
+windows(10,8)
+library(gplots)
+plotmeans(count~spray, data=df,
+          col = 'tomato',barcol='orange',
+          lwd=3, barwidth=3)
+
+model.tables(aov.result, type = 'mean')
+model.tables(aov.result, type = 'effect')
+
+plot(TukeyHSD(aov.result),
+     col='tomato',
+     las= 1)
+
+library(car)
+qqPlot(df$count,pch=19, col='orange')
+
+shapiro.test(df$count) # 정규분포를 따르지 않음을 알 수 있다.
+
+# 레벤 검정이나 바틀렛 검정을 통해 집단 간 분산의 동일성 여부 검정
+leveneTest(count ~ spray, data = df) # 등분산이 아니다 = 대립가설
+bartlett.test(count ~ spray, data = df) # 등분산이 아니다 = 대립가설
+
+oneway.test(count ~ spray, data = df)
+
+df <- ToothGrowth
+str(df)
+unique(df$dose)
+df$dose <- factor(ToothGrowth$dose, levels = c(0.5,1.0,2.0),
+                  labels = c('L','M','H'))
+str(df)
+
+tapply(df$len, 
+       INDEX = list(SUPP=df$supp, DOSE=df$dose),
+       FUN =mean)
+with(df, tapply(len, 
+                INDEX = list(SUPP=supp, DOSE=dose),
+                FUN =mean))
+
+# 이원 분산 분석
+# 아래 두 코드는 같은 의미
+boxplot(len ~ supp*dose, data =df, col=c('tomato','orange'))
+boxplot(len ~ supp+ dose + supp:dose, data =df, col=c('tomato','orange'))
+
+# Y(종속) ~ X(독립) : 주효과
+# Y(종속) ~ X1*X2   : 주효과 + 상호작용
+
+aov.result <- aov(len~supp*dose, data=df)
+summary(aov.result)
+
+# 사후분석
+TukeyHSD(aov.result)
+plot(TukeyHSD(aov.result), las=1, col='red')
+
+
+
+# 상관계수(3종류)
+#install.packages('cats')
+library(cats)
+cats
+cor(cats$Bwt, cats$Hwt, method='pearson')
+cor(cats$Bwt, cats$Hwt, method='spearman')
+cor(cats$Bwt, cats$Hwt, method='kendall')
+
+
+
+# 회귀분석(Y(종속): 자녀키, X(독립: 부모키))
+#install.packages('HistData')
+library(HistData)
+df <- GaltonFamilies
+str(df)
+
+windows(8,6)
+cor(df$midparentHeight,df$childHeight)
+plot(childHeight ~ midparentHeight, data = df,
+     col = adjustcolor('steelblue', alpha = 0.5),
+     pch = 19)
+
+plot(jitter(childHeight) ~ jitter(midparentHeight), 
+     data = df,
+     col = adjustcolor('steelblue', alpha = 0.5),
+     pch = 19)
+
+# 선형 회귀식
+model <- lm(childHeight~ midparentHeight,data= df)
+abline(model, col ='tomato' ,lwd=3)
+
+# x랜덤 생성
+x <- runif(n=100, min = 0, max=100)
+# y식 + 랜덤 추가
+y <- 3*x +5 + rnorm(100,0,20)
+# 데이터 하나씩 플랏
+plot(x,y,pch =19, col = 'skyblue')
+
+cor(x,y)
+# 공식생성
+lm(y~x)
+# 선으로 그리기
+model <- lm(y~x)
+abline(model, col ='tomato', lwd=2)
+
+summary(model)
+
+# y = 1x+5
+abline(a = 1, b =5, col ='red',
+       lwd =1, lty =2)
