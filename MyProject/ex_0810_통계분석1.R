@@ -441,3 +441,89 @@ summary(model)
 # y = 1x+5
 abline(a = 1, b =5, col ='red',
        lwd =1, lty =2)
+
+#실습 prestige
+
+library(car)
+data(Prestige)
+df <- Prestige
+str(df)
+
+table(df$type)
+
+windows(8,6)
+barplot(table(df$type), col ='orange')
+
+# 히스토그램
+hist(df$income, col = 'tomato', breaks=20)
+hist(df$women, col = 'tomato', breaks=20)
+hist(df$prestige, col = 'tomato', breaks=20)
+
+# 정규분포 따르는지 확인
+shapiro.test(df$income)
+shapiro.test(df$women)
+shapiro.test(df$prestige)
+
+plot(df[, -(5:6)], col = 'skyblue')
+
+# 선형 회구분석
+lm(income ~ education, data = df)
+cor(df[,-(5:6)])
+
+# (intercept -> 절편, 값 -> 기울기)
+model <- lm(income ~ education, data =df)
+summary(model)
+
+plot(income ~ education, data = df, 
+     pch=19, col='skyblue')
+abline(model, col = 'tomato', lwd=2)
+
+# education,prestige 독립변수끼리 상관관계가 높아
+# 동시에 pvalue를 확인하면 영향을 받는다.
+model <- lm(income ~ education + women + prestige, 
+            data = df)
+summary(model)
+
+model <- lm(income ~ education + women, 
+            data = df)
+summary(model)
+
+model <- lm(income ~ education + prestige, 
+            data = df)
+summary(model)
+
+model <- lm(income ~ prestige + women, 
+            data = df)
+summary(model)
+
+
+
+
+
+
+
+
+# 다중 회구분석 
+#install.packages('stargazer')
+library(stargazer)
+stargazer(model,type = 'text')
+
+windows(8,6)
+par(mfrow =c(2,2))
+plot(model)
+par(mfrow=c(1,1))
+
+model <-  lm(income ~ education, data =df)
+plot(income ~ education, data = df, col= 'skyblue',pch=19)
+
+model <-  lm(income ~ education+ I(ecuation^2), data =df)
+summary(model)
+abline(model)
+plot(income ~ education, data = df)
+
+library(dplyr)
+with(df,
+     lines(arrange(data.frame(education, fitted(model)), 
+                   education), 
+           lty = 1, lwd = 3, col = "tomato"))
+summary(model)     
