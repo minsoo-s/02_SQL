@@ -527,3 +527,95 @@ with(df,
                    education), 
            lty = 1, lwd = 3, col = "tomato"))
 summary(model)     
+
+install.packages('corrgram')
+library(corrgram)
+corrgram(df)
+
+df <- mtcars[, 1:6]
+df
+lm(mpg ~ ., data =df)
+model <- lm(mpg ~ ., data =df)
+summary(model)
+
+model <- lm(mpg ~ hp+ wt, data =df)
+summary(model)
+
+model <- lm(mpg ~ disp +drat + hp + wt,
+            data =df)
+mod.selected <- step(model, direction='backward')
+mod.selected
+summary(mod.selected)
+
+
+# 연습문제 
+# Kaggle House Price 데이터셋에서
+# 다중 선형 회구의 변수 선택을 통해
+# 최적의 독립 변수 조합을 찾아보시오.
+# 1. 전진선택법으로 찾은 조합은? R2, Adjusted R2?
+# 2. 후진선택법으로 찾은 조합은? R2, Adjusted R2?
+# 상수항 선택법 : SalesPrice ~ 1
+df <- read.csv('../FirstMiniProject/HousePrices.csv')
+str(df)
+df.lm <- lm(SalePrice~1,data=df)
+mod.selected <- step(df.lm, direction='backward')
+
+mod.selected <- step(lm(SalePrice~1,df), 
+                     scope=list(lower=~1,upper=~SalePrice),
+                     direction='backward')
+summary(mod.selected)
+
+
+# 교수님풀이
+
+df <- read.csv('../FirstMiniProject/HousePrices.csv')
+str(df)
+dim(df)
+is.num <- c()
+for (i in 1:80){
+  is.num[i] <- is.numeric(df[,i])
+}
+is.num
+df <- df[,is.num]
+df <- df[,-1]
+dim(df)
+df <- df[complete.cases(df),]
+dim(df)
+str(df)
+model <- lm(SalePrice~., data =df)
+summary(model)
+
+mod.selected.back <- step(model, direction = 'backward')
+summary(mod.selected.back)
+mod.selected.forward <- step(model, direction = 'forward')
+summary(mod.selected.forward)
+
+# 범주형 
+df <- InsectSprays
+model <- lm(count~spray,df)
+summary(model) 
+str(df)
+contrasts(df$spray)
+
+df <- mtcars[,1:6]
+str(df)
+
+df$cyl <- factor(df$cyl)
+head(df)
+table(df$cyl)
+
+model <- lm(mpg~.,data =df)
+summary(model)
+
+
+
+df <- split(iris,f = iris$Species)
+df <- rbind(df$setosa, df$versicolor)
+plot(df[,c(3,5)])
+
+plot(iris[iris$Species,c(1,5)])
+str(iris)
+
+
+# 시그모이드 함수
+# 로지스틱 함수
