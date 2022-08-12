@@ -616,6 +616,39 @@ plot(df[,c(3,5)])
 plot(iris[iris$Species,c(1,5)])
 str(iris)
 
-
 # 시그모이드 함수
 # 로지스틱 함수
+
+#install.packages('robust')
+library(robust)
+data(breslow.dat)
+
+df <- breslow.dat
+str(df)
+
+df <- df[,c('Base','Age','Trt','sumY')]
+str(df)
+dim(df)
+
+glm(sumY ~., data = df, family = poisson)
+summary(model)
+
+exp(coef(model))
+
+df <- split(iris, f = iris$Species)
+df <- rbind(df$setosa, df$versicolor)
+plot(df[, c(3,5)])
+
+glm(Species ~ Petal.Length,data=df)
+
+#df$Species <- as.integer(df$Species)
+model <- glm(Species ~ Petal.Length,data=df,
+            family = binomial(link='logit '))
+summary(model)
+
+
+# 혼동 행렬: Confusion Matrix
+# F-scroe
+# AUC
+
+# [다항 로지스틱]
