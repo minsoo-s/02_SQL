@@ -67,8 +67,12 @@ x <- rbinom(10000, size=100, prob=0.5)
 hist(x,col='steelblue',breaks=20)
 curve(dnorm(x,50,5), 30,37, col='tomato',
       add= T, lwd=3,lty=2)
-
-
+?curve
+plot(mtcars$mpg, mtcars$wt, col='tomato',pch=19)
+?lm
+x <- lm(mtcars$mpg~mtcars$wt)
+abline(x)
+?abline
 # 분포종류 -> 유의수준 설정 -> 95% 밖에 있으면 유의미
 
 # 실습-------------------------------------
@@ -455,7 +459,7 @@ windows(8,6)
 barplot(table(df$type), col ='orange')
 
 # 히스토그램
-hist(df$income, col = 'tomato', breaks=20)
+hist(df$income, col = 'tomato', break쳑ㄷs=20)
 hist(df$women, col = 'tomato', breaks=20)
 hist(df$prestige, col = 'tomato', breaks=20)
 
