@@ -619,7 +619,7 @@ str(iris)
 # 시그모이드 함수
 # 로지스틱 함수
 
-#install.packages('robust')
+install.packages('robust')
 library(robust)
 data(breslow.dat)
 
