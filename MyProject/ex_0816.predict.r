@@ -4,7 +4,7 @@ pg<- penguins
 str(pg)
 dim(pg)
 
-# 아델리 펭귄 여부---------------------------------------------------
+# 아델리 펭귄 여부--------------------------------------------------------------
 pg$is.adelie <- factor(
     ifelse(pg$species == 'Adelie',"YES","NO")
 )
@@ -25,7 +25,7 @@ pg$pred <- factor(
     ifelse(model$fitted.values > 0.5, "YES","NO"))
 table(pg$is.adelie, pg$pred)
 
-# virginica 펭귄 여부------------------------------------------------
+# virginica 펭귄여부------------------------------------------------
 df <- iris
 df$Species <- factor(ifelse(df$Species == 'virginica', 'YES','NO'))
 model <- glm(Species ~., data = df,
@@ -35,15 +35,20 @@ df$pred<- factor(ifelse(model$fitted.values >0.5,"YES","NO"))
 tab <- table(df$Species, df$pred)
 tab
 TP <- tab[2,2]
-TN <- tab[1,1]
+TN <- tab[1,1]ㄴ
 FP <- tab[2,1]
 FN <- tab[1,2]
 
 accuracy <- (TP + TN) / (TP + TN + FP + FN)
 accuracy
 
-install.packages('pROC')
+#install.packages('pROC')
 library(pROC)
 roc(Species ~ model$fitted.values, data = df,
     plot = TRUE, main = "ROC CURVE", col = 'tomato')
 
+
+# 분산분석(ANOVA)--------------------------------------
+install.packages('faraway')
+library(faraway)
+?sexab
