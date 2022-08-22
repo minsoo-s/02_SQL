@@ -31,3 +31,5 @@ gapminder %>%
             name = ~ country,
             hovertext = ~ pop,
             hoverinfo = 'x + y + name + hovertext ')
+library(gapminder)
+str(gapminder)

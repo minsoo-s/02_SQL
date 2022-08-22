@@ -240,3 +240,8 @@ ggplot(gapminder::gapminder) +
  scale_color_hue(direction = 1) +
  theme_minimal() +
  facet_wrap(vars(year))
+
+p <- ggplot(data = mpg,
+mapping = aes(x = displ, y = hwy))
+p
+
