@@ -183,3 +183,49 @@ server<-function(input,output){
 
 
 
+
+# bar_race: 캐글 따라하기
+#stable version of the package can be installed using install.packages(“gganimate”) 
+#latest development version can be obtained by devtools::install_github(“thomasp85/gganimate”).
+#loading required libraries
+
+
+library(tidyverse)
+library(reshape2)
+library(ggthemes)
+library(gganimate)
+library(gifski)
+
+#loading dataset
+suicide_data<-read.csv("./master.csv",header = TRUE,stringsAsFactors = FALSE)
+#selecting columns to work with
+suicide_sub<-suicide_data %>% select("ï..country","year" ,"sex","suicides_no")  %>% rename("country"="ï..country" )
+#function to sum the total suicide per country
+n<-unique(suicide_sub$country)
+country<-function(x){
+  suicide2<-suicide_sub %>% filter(country==x)
+  sum(suicide2$suicides_no)
+}
+#return a list with all total deaths per country
+country_total<-sapply(n,function(x) country(x))
+#creating a dataframe with top 10 total suicides per country
+df<-do.call(rbind,Map(data.frame,Country=n,Total_Suicides=country_total))
+df2<-df %>% arrange(desc(Total_Suicides))
+df3<-head(df2,n=10)
+write.csv(df3,"./ARTICLES/suicide rates/total_suicide.csv")
+#plotting the top 10 countries leading in the total suicide rates
+ggplot(df3,aes(reorder(Country,Total_Suicides),Total_Suicides,fill=as.factor(Country)))+
+  geom_col()+
+  coord_flip(clip = "off", expand = FALSE)+
+  guides( fill = FALSE) +
+  labs(title="TOTAL SUICIDE DEATHS PER COUNTRY FROM 1985-2016", 
+       y="Total Suicides Per Country", x="Country")+
+  scale_y_continuous(labels = scales::comma) +
+  geom_text(aes(label = paste(Total_Suicides,"")), hjust = 1)
+
+
+data <- read.csv('./master.csv')
+data
+
+
+
